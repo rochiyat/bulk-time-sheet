@@ -42,14 +42,14 @@ curl --location --request POST 'http://localhost:4000/bulk' \
 --header 'Cookie: {{cookie}}' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-  "taskId": 127536,
+  "taskId": {{taskId}},
   "activity": "Development Deeplink MCU and Support Production",
   "startDate": "2024-07-25",
   "endDate": "2024-07-28"
 }'
 ```
 
-Replace `{{cookie}}` with the Cookie value obtained from Talenta.
+Replace `{{cookie}} and {{taskId}}` with the Cookie and taskId value obtained from Talenta.
 
 ## Contributing
 Feel free to fork this repository and contribute to the project. For major changes, please open an issue first to discuss what you would like to change.
