@@ -1,7 +1,7 @@
 # Bulk Time Sheet
 
 ## Overview
-Bulk Time Sheet is a tool designed to streamline the process of logging activities and timesheets. It interacts with the Talenta platform to automate the entry of time-related data.
+Bulk Time Sheet is a tool designed to streamline the process of logging activities and timesheets. It interacts with the Talenta platform to automate the entry of time-related data. The application includes validation to ensure that weekends are not filled in Talenta, preventing unnecessary entries for those days.
 
 ## Prerequisites
 - Ensure that Node.js is installed on your operating system. You can download it from [Node.js Official Website](https://nodejs.org/).
