@@ -1,6 +1,8 @@
 const axios = require('axios');
+const env = require('dotenv');
 
-const url = 'https://hr.talenta.co/api/web/time-sheet/store';
+env.config();
+const url = process.env.URL_TALENTA;
 async function callTalentaAPI(payload, cookie) {
     try {
         const response = await axios.post(url, payload, {
@@ -11,7 +13,6 @@ async function callTalentaAPI(payload, cookie) {
         });
         return response.data;
     } catch (error) {
-        console.log('error', error)
         throw error.response ? error.response.data : error.message;
     }
 }

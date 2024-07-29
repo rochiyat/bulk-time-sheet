@@ -2,14 +2,11 @@
 const express = require('express');
 const axios = require('axios');
 const moment = require('moment');
+const env = require('dotenv');
 const app = express();
 const port = 4000;
 const { callTalentaAPI } = require('./service');
-
-const taskId = 127536;
-const startTime = '09:00:00';
-const endTime = '17:00:00';
-const url = 'https://hr.talenta.co/api/web/time-sheet/store';
+const { formatTaskData } = require('./utils');
 
 app.use(express.json());
 app.get('/', (req, res) => {
@@ -30,28 +27,30 @@ app.post('/bulk', async (req, res) => {
             throw new Error('Data is required');
         }
 
-        const diffDays = moment(data.endTime).diff(moment(data.startTime), 'days');
-        console.log('diffDays', diffDays);
+        const diffDays = moment(data.endDate).diff(moment(data.startDate), 'days');
+
         if (diffDays < 0) {
             throw new Error('End time should be greater than start time');
         } else if (diffDays === 0) {
-            payload = {
-                task_id: taskId,
-                activity: data.activity,
-                start_time: moment(data.startTime).format(`YYYY-MM-DD ${startTime}`),
-                end_time: moment(data.endTime).format(`YYYY-MM-DD ${endTime}`),
-            }
+            payload = formatTaskData(data);
             response = await callTalentaAPI(payload, cookie);
         } else if (diffDays > 0) {
             let promises = [];
+            let payloadData;
+            let date;
             for (let i = 0; i <= diffDays; i++) {
-                const date = moment(data.startTime).add(i, 'days').format('YYYY-MM-DD');
-                payload = {
-                    task_id: taskId,
-                    activity: data.activity,
-                    start_time: moment(date).format(`YYYY-MM-DD ${startTime}`),
-                    end_time: moment(date).format(`YYYY-MM-DD ${endTime}`),
+
+                date = moment(data.startDate).add(i, 'days');
+                if (date.day() === 0 || date.day() === 6) {
+                    continue;
                 }
+                payloadData = {
+                    taskId: data.taskId,
+                    activity: data.activity,
+                    startDate: moment(date).format('YYYY-MM-DD'),
+                    endDate: moment(date).format('YYYY-MM-DD'),
+                }
+                payload = formatTaskData(payloadData);
                 promises.push(callTalentaAPI(payload, cookie));
             }
             response = await Promise.all(promises);
