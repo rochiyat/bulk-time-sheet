@@ -63,7 +63,9 @@ export async function last(req, res) {
         if (!cookie) {
             return res.status(500).send('Cookie is required');
         }
+        console.log('masuk last');
         const response = await timesheetServices.lastTimesheet(cookie);
+        console.log('response', response);
         if (response.status !== 200) {
             return res.status(500).send(response.error);
         }

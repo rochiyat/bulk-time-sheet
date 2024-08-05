@@ -8,6 +8,11 @@ const port = config.port || 4000;
 
 app.use(express.json()); // Middleware to parse JSON bodies
 
+// hello world
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+});
+
 app.use('/api/timesheet', timesheetRoute);
 
 app.listen(port, () => {
