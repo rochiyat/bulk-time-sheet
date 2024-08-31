@@ -4,7 +4,7 @@ import * as timesheetController from '../controllers/timesheet.controller.js';
 
 const router = express.Router();
 
-router.get('/last', timesheetController.last);
+router.get('/last-week', timesheetController.last);
 router.get('/date/:date', timesheetController.timesheetByDate);
 router.get('/this-week', timesheetController.timesheetThisWeek);
 router.get('/range-date/:startDate/:endDate', timesheetController.timesheetByRangeDate);

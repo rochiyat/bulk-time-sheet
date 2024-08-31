@@ -4,7 +4,7 @@ import env from 'dotenv';
 import * as timesheetServices from '../services/timesheet.service.js';
 import {
     dataFormated, formatTaskData, responseError, responseSuccess,
-    getRangeDate, getMonthStartAndEnd,
+    getRangeDate, getMonthStartAndEnd, formatUpdateTaskData,
 } from '../utils/utils.js';
 
 env.config();
@@ -47,7 +47,7 @@ export async function bulk(req, res) {
                     endDate: moment(date).format('YYYY-MM-DD'),
                 }
                 payload = formatTaskData(payloadData);
-                promises.push(callTalentaAPI(payload, cookie));
+                promises.push(timesheetServices.inputTimesheet(payload, cookie));
             }
             response = await Promise.all(promises);
         }
@@ -63,9 +63,8 @@ export async function last(req, res) {
         if (!cookie) {
             return res.status(500).send('Cookie is required');
         }
-        console.log('masuk last');
+
         const response = await timesheetServices.lastTimesheet(cookie);
-        console.log('response', response);
         if (response.status !== 200) {
             return res.status(500).send(response.error);
         }
@@ -131,14 +130,14 @@ export async function timesheetByRangeDate(req, res) {
     }
 }
 
-export function deleteTimesheet(req, res) {
+export async function deleteTimesheet(req, res) {
     try {
         const {cookie} = req.headers;
         const {id} = req.params;
         if (!cookie) {
             return res.status(500).send('Cookie is required');
         }
-        const response = timesheetServices.deleteTimesheet(cookie, id);
+        const response = await timesheetServices.deleteTimesheet(cookie, id);
         return responseSuccess(res, response.data);
     } catch (error) {
         return responseError(res, error);
@@ -148,22 +147,16 @@ export function deleteTimesheet(req, res) {
 export async function updateTimesheet(req, res) {
     try {
         const {cookie} = req.headers;
-        const data = req.body;
+        const {id} = req.params;
         if (!cookie) {
             return res.status(500).send('Cookie is required');
         }
-        if (!data) {
-            return res.status(500).send('Data is required');
+        if (!req.body) {
+            return res.status(500).send('Body is required');
         }
 
-        const payloadData = {
-            id: data.id,
-            task_id: data.taskId,
-            activity: data.activity,
-            start_time: moment(date).format('YYYY-MM-DD'),
-            end_time: moment(date).format('YYYY-MM-DD'),
-        }
-
+        const payloadData = formatUpdateTaskData({ ...req.body, id });
+        console.log('payloadData', payloadData, cookie);
         const response = await timesheetServices.updateTimesheet(cookie, payloadData);
         return responseSuccess(res, response.data);
     } catch (error) {

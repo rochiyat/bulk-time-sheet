@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
-app.use('/', timesheetRoute);
+app.use('/timesheet', timesheetRoute);
 
 app.listen(port, () => {
     console.log(`Timesheet app listening at http://localhost:${port}`);

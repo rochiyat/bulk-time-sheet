@@ -17,6 +17,17 @@ export function formatTaskData(payload) {
     }
 }
 
+export function formatUpdateTaskData(payload) {
+    const { taskId, activity, startDate, endDate, id } = payload;
+    return {
+        id: Number(id),
+        task_id: taskId,
+        activity: activity,
+        start_time: moment(startDate).format(`YYYY-MM-DD ${startTime}`),
+        end_time: moment(endDate).format(`YYYY-MM-DD ${startTime}`),
+    }
+}
+
 export function responseSuccess(res, data) {
     const response = {
         status: 'success',

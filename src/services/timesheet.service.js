@@ -57,20 +57,23 @@ export async function deleteTimesheet(cookie, id) {
         });
         return response.data;
     } catch (error) {
+        console.log('error', error);
         throw error.response ? error.response.data : error.message;
     }
 }
 
 export async function updateTimesheet(cookie, payload) {
     try {
-        const response = await axios.put(`${url}/update`, payload, {
+        const response = await axios.post(`${url}/update/`, payload, {
             headers: {
                 'Content-Type': 'application/json',
                 'Cookie': cookie
             }
         });
+        console.log(response);
         return response.data;
     } catch (error) {
+        console.log('error', error);
         throw error.response ? error.response.data : error.message;
     }
 }
